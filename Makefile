@@ -46,6 +46,11 @@ lint:
 	@golint ./...
 	@golangci-lint run
 
+## Run chmod git hooks
+.PHONY: hooks
+hooks:
+	@chmod ug+x ./.githooks/*
+
 ## Build container test do com compose de CI
 .PHONY: ci/linter
 ci/linter:
