@@ -62,10 +62,10 @@ lint:
 ## Run chmod git hooks
 .PHONY: hooks
 hooks:
-	@chmod ug+x ./.githooks/*
+	@chmod ug+x ./.commitlint/*
 
 
 ## Gera uma nova versão, cria uma tag e publica no git VE=MA PF=RC
 .PHONY: version_and_git_tag
 version_and_git_tag:
-	@./.githooks/version $(VE) $(PF)
+	@./.commitlint/version $(VE) $(PF)
