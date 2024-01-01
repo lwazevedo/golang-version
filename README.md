@@ -26,3 +26,23 @@ If you want to use semantic versioning in conjunction with Git tags, use the fol
 ```
 
 Feel free to explore the Makefile and adapt it for your use.
+
+
+# Package
+
+ [go imports](https://pkg.go.dev/golang.org/x/tools/cmd/goimports?source=post_page-----c43740065c2e--------------------------------)
+
+ [go fmt](https://go.dev/blog/gofmt?source=post_page-----c43740065c2e--------------------------------)
+
+ [go lint](https://github.com/golang/lint)
+
+ [go vet](https://pkg.go.dev/cmd/vet)
+
+ [go gci lint](https://github.com/golangci/golangci-lint)
+
+ [go commit lint](https://github.com/conventionalcommit/commitlint)
+
+ # Next steps
+ Check the possibility of replacing the version control with this item:
+ [go releaser](https://goreleaser.com/install/#compiling-from-source)
+
