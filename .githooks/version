@@ -1,0 +1,61 @@
+#!/usr/bin/env bash
+
+function increment_version() {
+  local CURRENT_VERSION=$1
+  local PART=$2
+  local NEW_VERSION
+
+  case $PART in
+    "MA") NEW_VERSION=$(awk -F'.' '{print $1 + 1 ".0.0"}' <<< "$CURRENT_VERSION");;
+    "MI") NEW_VERSION=$(awk -F'.' '{print $1 "." $2 + 1 ".0"}' <<< "$CURRENT_VERSION");;
+    "PA") NEW_VERSION=$(awk -F'.' '{print $1 "." $2 "." $3 + 1}' <<< "$CURRENT_VERSION");;
+    *) echo "Parte inválida: $PART"; exit 1;;
+  esac
+
+  echo "$NEW_VERSION"
+}
+
+# Verifica se o número de argumentos é correto
+if [ "$#" -ne 2 ]; then
+  echo "Uso: $0 <MA|MI|PA> <PREFIX>"
+  exit 1
+fi
+
+VERSION="$1"
+PREFIX="$2"
+
+# Lê o valor atual do arquivo .properties.version
+CURRENT_VERSION=$(head -n 1 .properties.version)
+
+# Incrementa a versão conforme especificado
+NEW_VERSION=$(increment_version "$CURRENT_VERSION" "$VERSION")
+
+# Adiciona o PREFIX à versão, se PREFIX não for vazio e não for nulo e for uma string
+if [ -n "$PREFIX" ] && [ "$PREFIX" != "null" ] && [ -n "$PREFIX" ] && [ -z $(echo "$PREFIX" | grep -E "^[[:space:]]*$") ]; then
+  NEW_VERSION="$NEW_VERSION-$PREFIX"
+fi
+
+# Verifica se a nova versão já é uma tag existente
+if git tag -l | grep -q "^$NEW_VERSION$"; then
+  echo "Erro: A versão $NEW_VERSION já é uma tag existente."
+  exit 1
+fi
+
+# Atualiza o arquivo .properties.version com o novo valor
+echo "$NEW_VERSION" > .properties.version
+
+# Exibe mensagem
+echo "Versão incrementada para $NEW_VERSION"
+
+# Adiciona as alterações ao Git
+git add .properties.version
+
+# Faz um commit com a nova versão
+git commit -m "Incrementa versão para $NEW_VERSION"
+
+# Cria uma nova tag
+git tag -a "$NEW_VERSION" -m "Versão $NEW_VERSION"
+
+# Publica as alterações, o commit e a tag no repositório remoto
+git push --follow-tags
+

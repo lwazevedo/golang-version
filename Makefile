@@ -1,6 +1,19 @@
 # Variables
 APP_NAME=golang_version
 APP_CMD=./cmd/main.go
+PF=null
+
+ifeq (version_and_git_tag,$(firstword $(MAKECMDGOALS)))
+ifndef VE
+$(error Versão não especificada. Utilize 'make build VE=<valor>  (OPTIONAL) PF=<valor>')
+endif
+endif
+ifeq (version_and_git_tag,$(firstword $(MAKECMDGOALS)))
+ifeq ($(filter $(VE), MA MI PA),)
+$(error Versão inválida. Utilize 'MA => para Major', 'MI => para Minor' ou 'PA => para Path' para a versão.)
+endif
+endif
+
 
 ## Help para todos os Targets
 .PHONY: help
@@ -51,7 +64,8 @@ lint:
 hooks:
 	@chmod ug+x ./.githooks/*
 
-## Build container test do com compose de CI
-.PHONY: ci/linter
-ci/linter:
-	docker-compose -f docker-compose.ci.yml run ci
+
+## Gera uma nova versão, cria uma tag e publica no git VE=MA PF=RC
+.PHONY: version_and_git_tag
+version_and_git_tag:
+	@./.githooks/version $(VE) $(PF)
