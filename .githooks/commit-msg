@@ -1,1 +1,0 @@
-gitlint --msg-file=$1
